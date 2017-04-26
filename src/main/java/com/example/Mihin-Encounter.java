@@ -29,7 +29,8 @@ import org.json.simple.parser.JSONParser;
 import java.util.HashMap;
 import com.utils.*;
 import java.util.ArrayList;
-public class Synpuf
+import java.text.SimpleDateFormat;
+public class Mihin_Encounter
 {
  private static final byte[] FAMILY = Bytes.toBytes("beneficiary-summary");
   private static final byte[] beneficiry_id = Bytes.toBytes("beneficiry_id");
@@ -63,16 +64,12 @@ static final DoFn<String, TableRow> MUTATION_TRANSFORM = new DoFn<String, TableR
 			startDate =  (String) periodObj.get("start");
 			kind =  (String) map.get("class");
 		        e_id = (String) map.get("id"); 
-			TableRow row = new TableRow().set("month", c.element().getKey()).set("tornado_count", c.element().getValue());
+			SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+			java.util.Date date = sdf1.parse(startDate);
+			java.sql.Date sqlStartDate = new java.sql.Date(date.getTime());
+			TableRow row = new TableRow().set("encounter_id", e_id).set("class", kind).set("patient_id",patientId).set("startDate",sqlStartDate);
      			c.output(row);
-			put_object.addColumn(FAMILY, E_ID, Bytes.toBytes(e_id));
-			put_object.addColumn(FAMILY, STARTDATE, Bytes.toBytes(startDate));
-			put_object.addColumn(FAMILY, ENDDATE, Bytes.toBytes(endDate));
-			put_object.addColumn(FAMILY, STARTTIME, Bytes.toBytes(startTime));
-			put_object.addColumn(FAMILY, P_ID, Bytes.toBytes(patientId));
-			put_object.addColumn(FAMILY, ENDTIME, Bytes.toBytes(endTime));
-			put_object.addColumn(FAMILY, KIND, Bytes.toBytes(kind));
-			c.output(put_object);	
+			
 			}
 		}
 		catch(Exception e){
@@ -97,12 +94,15 @@ static final DoFn<String, TableRow> MUTATION_TRANSFORM = new DoFn<String, TableR
 		options.setProject("healthcare-12");
 		
 		// The 'gs' URI means that this is a Google Cloud Storage path
-		options.setStagingLocation("gs://synpuf_data/staging1");
+		options.setStagingLocation("gs://mihin-data/staging12");
 
 		// Then create the pipeline.
 		Pipeline p = Pipeline.create(options);
 			CloudBigtableIO.initializeForWrite(p);
- 		p.apply(TextIO.Read.from("gs://synpuf_data/DE1_0_2008_Beneficiary_Summary_File_Sample_1.csv")).apply(ParDo.named("Loading to Bigtable").of(MUTATION_TRANSFORM)).apply(CloudBigtableIO.writeToTable(config));
+ 		p.apply(TextIO.Read.from("gs://mihin-data/formatedPatientEntry.json")).apply(ParDo.named("Loading to Bigtable").of(MUTATION_TRANSFORM))
+		.apply(BigQueryIO.Write.to(options.getOutput())
+                .withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_NEVER)
+                .withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_TRUNCATE));
 	
 		p.run();
 
