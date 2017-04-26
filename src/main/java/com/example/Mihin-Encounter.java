@@ -91,11 +91,23 @@ static final DoFn<String, TableRow> MUTATION_TRANSFORM = new DoFn<String, TableR
 		// Then create the pipeline.
 		Pipeline p = Pipeline.create(options);
  		p.apply(TextIO.Read.from("gs://mihin-data/formatedPatientEntry.json")).apply(ParDo.named("Loading to Bigtable").of(MUTATION_TRANSFORM))
-		.apply(BigQueryIO.Write.to(options.getOutput()).withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_NEVER)
-                .withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_TRUNCATE));
+		.apply(BigQueryIO.Write
+      .named("Write")
+      .to("healthcare-12:Mihin_Data_Sample.Encounter_Entry")
+     .withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_TRUNCATE)
+      .withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_NEVER));
+
 	
 		p.run();
+/*
+.apply(BigQueryIO.Write
+      .named("Write")
+      .to("healthcare-12:Mihin_Data_Sample.Encounter_Entry")
+     .withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_TRUNCATE)
+      .withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_NEVER));
 
+
+*/
 		//PCollection<String> lines=p.apply(TextIO.Read.from("gs://synpuf-data/DE1_0_2008_Beneficiary_Summary_File_Sample_1.csv"))
 		//PCollection<String> fields = lines.apply(ParDo.of(new ExtractFieldsFn()));
 		//p.apply(TextIO.Write.to("gs://synpuf-data/temp.txt"));
