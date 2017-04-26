@@ -79,21 +79,7 @@
           <redirectTestOutputToFile>true</redirectTestOutputToFile>
         </configuration>
         <dependencies>
-          <dependency>
-    <groupId>com.googlecode.json-simple</groupId>
-    <artifactId>json-simple</artifactId>
-    <version>1.1.1</version>
-</dependency>
-<dependency>
-    <groupId>com.google.http-client</groupId>
-    <artifactId>google-http-client-jackson</artifactId>
-    <version>1.15.0-rc</version>
-</dependency>
-	  <dependency>
-    <groupId>org.json</groupId>
-    <artifactId>json</artifactId>
-    <version>20090211</version>
-</dependency>
+        
           <dependency>
             <groupId>org.apache.maven.surefire</groupId>
             <artifactId>surefire-junit47</artifactId>
@@ -124,7 +110,21 @@
       <artifactId>google-cloud-dataflow-java-sdk-all</artifactId>
       <version>[1.0.0, 1.99)</version>
     </dependency>
-
+  <dependency>
+    <groupId>com.googlecode.json-simple</groupId>
+    <artifactId>json-simple</artifactId>
+    <version>1.1.1</version>
+</dependency>
+<dependency>
+    <groupId>com.google.http-client</groupId>
+    <artifactId>google-http-client-jackson</artifactId>
+    <version>1.15.0-rc</version>
+</dependency>
+	  <dependency>
+    <groupId>org.json</groupId>
+    <artifactId>json</artifactId>
+    <version>20090211</version>
+</dependency>
       <dependency>
             <groupId>com.opencsv</groupId>
             <artifactId>opencsv</artifactId>
