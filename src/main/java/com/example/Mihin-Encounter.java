@@ -32,9 +32,6 @@ import java.util.ArrayList;
 import java.text.SimpleDateFormat;
 public class Mihin_Encounter
 {
- private static final byte[] FAMILY = Bytes.toBytes("beneficiary-summary");
-  private static final byte[] beneficiry_id = Bytes.toBytes("beneficiry_id");
-    private static final byte[] death_date = Bytes.toBytes("death_date");
    private static long row_id = 0;
     //private static final byte[] SEX = Bytes.toBytes("sex");
 
@@ -45,15 +42,14 @@ static final DoFn<String, TableRow> MUTATION_TRANSFORM = new DoFn<String, TableR
   public void processElement(DoFn<String, TableRow>.ProcessContext c) throws Exception {
   	String line = c.element();
    	JSONArray indicationObject =null;
-	String patientId = null, startDate = null,startMonth,startYear,startDate,kind=null,e_id = null ;
+	String patientId = null, startDate = null,startMonth,startYear,kind=null,e_id = null ;
 	JSONParser parser = new JSONParser();
 	try {
 		Object obj = parser.parse(line);
 		JSONObject jsonObject = (JSONObject) obj;
 		JSONArray resource = (JSONArray) jsonObject.get("resources");
 		for (int i = 0; i < resource.size(); i++) {
-			put_object = new Put(Bytes.toBytes(row_id));
-   			row_id = row_id +1;
+			row_id = row_id +1;
 			JSONObject jsonObject1 = (JSONObject) parser.parse(resource.get(i).toString());
 			HashMap map  = (HashMap) jsonObject1.get("resource");
 			HashMap<String , JSONArray> map2  =  (HashMap<String, JSONArray>) jsonObject1.get("resource");
@@ -84,11 +80,6 @@ static final DoFn<String, TableRow> MUTATION_TRANSFORM = new DoFn<String, TableR
 
 	public static void main(String[] args) 
 	{
-		// config object for writing to bigtable
-
-		CloudBigtableScanConfiguration config = new CloudBigtableScanConfiguration.Builder().withProjectId("healthcare-12").withInstanceId("hc-dataset").withTableId("synpuf-data").build();
-
-		// Start by defining the options for the pipeline.
 		
 		DataflowPipelineOptions  options = PipelineOptionsFactory.create().as(DataflowPipelineOptions.class);
 		options.setRunner(BlockingDataflowPipelineRunner.class);
