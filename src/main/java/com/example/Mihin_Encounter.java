@@ -1,5 +1,4 @@
 package com.example;
-
 import com.google.cloud.dataflow.sdk.Pipeline;
 import com.google.cloud.dataflow.sdk.io.TextIO;
 import com.google.cloud.dataflow.sdk.options.DataflowPipelineOptions;
@@ -21,23 +20,18 @@ import com.google.cloud.dataflow.sdk.options.Default;
 import com.google.cloud.dataflow.sdk.options.Description;
 import com.google.cloud.dataflow.sdk.options.Validation;
 import com.google.cloud.dataflow.sdk.transforms.Count;
-
 import java.io.IOException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import java.util.HashMap;
-
 import java.util.ArrayList;
 import java.text.SimpleDateFormat;
 public class Mihin_Encounter
 {
    private static long row_id = 0;
-    //private static final byte[] SEX = Bytes.toBytes("sex");
-
 static final DoFn<String, TableRow> MUTATION_TRANSFORM = new DoFn<String, TableRow>() {
   private static final long serialVersionUID = 1L;
-
   @Override
   public void processElement(DoFn<String, TableRow>.ProcessContext c) throws Exception {
   	String line = c.element();
@@ -65,7 +59,6 @@ static final DoFn<String, TableRow> MUTATION_TRANSFORM = new DoFn<String, TableR
 			java.sql.Date sqlStartDate = new java.sql.Date(date.getTime());
 			TableRow row = new TableRow().set("encounter_id", e_id).set("class", kind).set("patient_id",patientId).set("startDate",sqlStartDate);
      			c.output(row);
-			
 			}
 		}
 		catch(Exception e){
@@ -74,21 +67,13 @@ static final DoFn<String, TableRow> MUTATION_TRANSFORM = new DoFn<String, TableR
 		}
   }
 
-};
-		
-	
-
+}; 
 	public static void main(String[] args) 
 	{
-		
 		DataflowPipelineOptions  options = PipelineOptionsFactory.create().as(DataflowPipelineOptions.class);
 		options.setRunner(BlockingDataflowPipelineRunner.class);
 		options.setProject("healthcare-12");
-		
-		// The 'gs' URI means that this is a Google Cloud Storage path
 		options.setStagingLocation("gs://mihin-data/staging12");
-
-		// Then create the pipeline.
 		Pipeline p = Pipeline.create(options);
  		p.apply(TextIO.Read.from("gs://mihin-data/formatedPatientEntry.json")).apply(ParDo.named("Loading to Bigtable").of(MUTATION_TRANSFORM))
 		.apply(BigQueryIO.Write
@@ -96,8 +81,6 @@ static final DoFn<String, TableRow> MUTATION_TRANSFORM = new DoFn<String, TableR
       .to("healthcare-12:Mihin_Data_Sample.Encounter_Entry")
      .withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_TRUNCATE)
       .withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_NEVER));
-
-	
 		p.run();
 /*
 .apply(BigQueryIO.Write
