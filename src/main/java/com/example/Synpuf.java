@@ -15,12 +15,20 @@ import com.google.cloud.dataflow.sdk.util.gcsfs.GcsPath;
 import com.google.cloud.dataflow.sdk.values.PCollection;
 import com.opencsv.CSVParser;
 import java.io.IOException;
-import com.google.cloud.bigtable.dataflow.CloudBigtableIO;
-import com.google.cloud.bigtable.dataflow.CloudBigtableOptions;
-import com.google.cloud.bigtable.dataflow.CloudBigtableScanConfiguration;
-import org.apache.hadoop.hbase.client.Mutation;
-import org.apache.hadoop.hbase.client.Put;
+import com.google.api.services.bigquery.model.TableRow;
+import com.google.cloud.dataflow.sdk.io.BigQueryIO;
+import com.google.cloud.dataflow.sdk.options.Default;
+import com.google.cloud.dataflow.sdk.options.Description;
+import com.google.cloud.dataflow.sdk.options.Validation;
+import com.google.cloud.dataflow.sdk.transforms.Count;
 import org.apache.hadoop.hbase.util.Bytes;
+import java.io.IOException;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import java.util.HashMap;
+import com.utils.*;
+import java.util.ArrayList;
 public class Synpuf
 {
  private static final byte[] FAMILY = Bytes.toBytes("beneficiary-summary");
@@ -29,27 +37,49 @@ public class Synpuf
    private static long row_id = 0;
     //private static final byte[] SEX = Bytes.toBytes("sex");
 
-static final DoFn<String, Mutation> MUTATION_TRANSFORM = new DoFn<String, Mutation>() {
+static final DoFn<String, TableRow> MUTATION_TRANSFORM = new DoFn<String, TableRow>() {
   private static final long serialVersionUID = 1L;
 
   @Override
-  public void processElement(DoFn<String, Mutation>.ProcessContext c) throws Exception {
-
+  public void processElement(DoFn<String, TableRow>.ProcessContext c) throws Exception {
   	String line = c.element();
-		 	CSVParser csvParser = new CSVParser();
- 		String[] parts = csvParser.parseLine(line);
+   	JSONArray indicationObject =null;
+	String patientId = null, startDate = null,startMonth,startYear,startDate,kind=null,e_id = null ;
+	JSONParser parser = new JSONParser();
+	try {
+		Object obj = parser.parse(line);
+		JSONObject jsonObject = (JSONObject) obj;
+		JSONArray resource = (JSONArray) jsonObject.get("resources");
+		for (int i = 0; i < resource.size(); i++) {
+			put_object = new Put(Bytes.toBytes(row_id));
+   			row_id = row_id +1;
+			JSONObject jsonObject1 = (JSONObject) parser.parse(resource.get(i).toString());
+			HashMap map  = (HashMap) jsonObject1.get("resource");
+			HashMap<String , JSONArray> map2  =  (HashMap<String, JSONArray>) jsonObject1.get("resource");
+			JSONObject patientObj  =  (JSONObject) map.get("patient");
+			String patient =  (String) patientObj.get("reference");
+			patientId = patient.substring(patient.indexOf('/')+1);
+			JSONObject periodObj  =  (JSONObject) map.get("period");
+			startDate =  (String) periodObj.get("start");
+			kind =  (String) map.get("class");
+		        e_id = (String) map.get("id"); 
+			TableRow row = new TableRow().set("month", c.element().getKey()).set("tornado_count", c.element().getValue());
+     			c.output(row);
+			put_object.addColumn(FAMILY, E_ID, Bytes.toBytes(e_id));
+			put_object.addColumn(FAMILY, STARTDATE, Bytes.toBytes(startDate));
+			put_object.addColumn(FAMILY, ENDDATE, Bytes.toBytes(endDate));
+			put_object.addColumn(FAMILY, STARTTIME, Bytes.toBytes(startTime));
+			put_object.addColumn(FAMILY, P_ID, Bytes.toBytes(patientId));
+			put_object.addColumn(FAMILY, ENDTIME, Bytes.toBytes(endTime));
+			put_object.addColumn(FAMILY, KIND, Bytes.toBytes(kind));
+			c.output(put_object);	
+			}
+		}
+		catch(Exception e){
+			e.printStackTrace(); 
+			throw e;
+		}
 
-      			// Output each word encountered into the output PCollection.
-       			
-         			// c.output(part);
-       			
-   				Put put_object = new Put(Bytes.toBytes(row_id));
-row_id = row_id +1;	
-     			    byte[] data = Bytes.toBytes( parts[0]);
-   					put_object.addColumn(FAMILY, beneficiry_id,data);
-   					put_object.addColumn(FAMILY, death_date, Bytes.toBytes(parts[2]));
-					c.output(put_object);
-  }
 };
 		
 	
