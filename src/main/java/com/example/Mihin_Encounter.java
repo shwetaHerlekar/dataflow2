@@ -75,7 +75,7 @@ static final DoFn<String, TableRow> MUTATION_TRANSFORM = new DoFn<String, TableR
 		options.setProject("healthcare-12");
 		options.setStagingLocation("gs://mihin-data/staging12");
 		Pipeline p = Pipeline.create(options);
- 		p.apply(TextIO.Read.from("gs://mihin-data/formatedPatientEntry.json")).apply(ParDo.named("Loading to Bigtable").of(MUTATION_TRANSFORM))
+ 		p.apply(TextIO.Read.from("gs://mihin-data/formatedEncounterEntry.json")).apply(ParDo.named("Loading to Bigtable").of(MUTATION_TRANSFORM))
 		.apply(BigQueryIO.Write
       .named("Write")
       .to("healthcare-12:Mihin_Data_Sample.Encounter_Entry")
