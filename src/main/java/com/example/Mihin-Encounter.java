@@ -76,6 +76,7 @@ static final DoFn<String, TableRow> MUTATION_TRANSFORM = new DoFn<String, TableR
 			e.printStackTrace(); 
 			throw e;
 		}
+  }
 
 };
 		
@@ -98,10 +99,8 @@ static final DoFn<String, TableRow> MUTATION_TRANSFORM = new DoFn<String, TableR
 
 		// Then create the pipeline.
 		Pipeline p = Pipeline.create(options);
-			CloudBigtableIO.initializeForWrite(p);
  		p.apply(TextIO.Read.from("gs://mihin-data/formatedPatientEntry.json")).apply(ParDo.named("Loading to Bigtable").of(MUTATION_TRANSFORM))
-		.apply(BigQueryIO.Write.to(options.getOutput())
-                .withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_NEVER)
+		.apply(BigQueryIO.Write.to(options.getOutput()).withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_NEVER)
                 .withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_TRUNCATE));
 	
 		p.run();
