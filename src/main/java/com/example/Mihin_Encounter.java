@@ -21,13 +21,13 @@ import com.google.cloud.dataflow.sdk.options.Default;
 import com.google.cloud.dataflow.sdk.options.Description;
 import com.google.cloud.dataflow.sdk.options.Validation;
 import com.google.cloud.dataflow.sdk.transforms.Count;
-import org.apache.hadoop.hbase.util.Bytes;
+
 import java.io.IOException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import java.util.HashMap;
-import com.utils.*;
+
 import java.util.ArrayList;
 import java.text.SimpleDateFormat;
 public class Mihin_Encounter
