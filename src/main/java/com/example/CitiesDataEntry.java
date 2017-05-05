@@ -33,7 +33,7 @@ static final DoFn<String, TableRow> MUTATION_TRANSFORM = new DoFn<String, TableR
 	  CSVParser csvParser = new CSVParser();
 	String[] parts = csvParser.parseLine(line);
 	String Year = parts[0] ;String State = parts[2];String Category = parts[6] ;String Measure = parts[8] ;String Data_Value = parts[12];
-	String Low_confidence_Limit = parts[13];String High_confidence_Limit = parts[14] ;String Population = parts[17] ;String issue = parts[21];
+	String Low_confidence_Limit = parts[13];String High_confidence_Limit = parts[14] ;String Population = parts[17] ;String issue = parts[23];
 	TableRow row = new TableRow().set("Year", Year).set("State", State).set("Category",Category)
 	.set("Measure",Measure).set("Data_Value",Data_Value).set("Low_confidence_Limit",Low_confidence_Limit).set("High_confidence_Limit",High_confidence_Limit)
 		.set("Population",Population).set("issue",issue);
