@@ -30,6 +30,7 @@ static final DoFn<String, TableRow> MUTATION_TRANSFORM = new DoFn<String, TableR
   @Override
   public void processElement(DoFn<String, TableRow>.ProcessContext c) throws Exception {
   	String line = c.element();
+	  CSVParser csvParser = new CSVParser();
 	String[] parts = csvParser.parseLine(line);
 	String Year = parts[0] ;String State = parts[2];String Category = parts[6] ;String Measure = parts[8] ;String Data_Value = parts[12];
 	String Low_confidence_Limit = parts[13];String High_confidence_Limit = parts[14] ;String Population = parts[17] ;String issue = parts[21];
