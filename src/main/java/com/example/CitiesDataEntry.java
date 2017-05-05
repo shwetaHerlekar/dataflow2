@@ -48,7 +48,7 @@ static final DoFn<String, TableRow> MUTATION_TRANSFORM = new DoFn<String, TableR
 		options.setProject("healthcare-12");
 		options.setStagingLocation("gs://mihin-data/staging12");
 		Pipeline p = Pipeline.create(options);
- 		p.apply(TextIO.Read.named("Fetching File from Cloud").from("gs://mihin-data/formatedEncounterEntry.json")).apply(ParDo.named("Processing File").of(MUTATION_TRANSFORM))
+ 		p.apply(TextIO.Read.named("Fetching File from Cloud").from("gs://healthcare-12/500_Cities__Local_Data_for_Better_Health.csv")).apply(ParDo.named("Processing File").of(MUTATION_TRANSFORM))
 		.apply(BigQueryIO.Write
       .named("Writeing to Big Querry")
       .to("healthcare-12:health_care_data.500_cities_local_data_for_better_health")
