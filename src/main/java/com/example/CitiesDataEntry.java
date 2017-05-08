@@ -12,35 +12,32 @@ import com.google.cloud.dataflow.sdk.transforms.DoFn;
 import com.google.cloud.dataflow.sdk.transforms.ParDo;
 import com.google.cloud.dataflow.sdk.util.gcsfs.GcsPath;
 import com.google.cloud.dataflow.sdk.values.PCollection;
-import com.opencsv.CSVParser;
-import java.io.IOException;
+import com.util.Parser;
+import com.dao.CitiesData;
 import com.google.api.services.bigquery.model.TableRow;
 import com.google.cloud.dataflow.sdk.io.BigQueryIO;
 import com.google.cloud.dataflow.sdk.options.Default;
 import com.google.cloud.dataflow.sdk.options.Description;
 import com.google.cloud.dataflow.sdk.options.Validation;
 import com.google.cloud.dataflow.sdk.transforms.Count;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 public class CitiesDataEntry
 {
-   private static long row_id = 0;
-static final DoFn<String, TableRow> MUTATION_TRANSFORM = new DoFn<String, TableRow>() {
-  private static final long serialVersionUID = 1L;
-  @Override
-  public void processElement(DoFn<String, TableRow>.ProcessContext c) throws Exception {
-  	String line = c.element();
-	  CSVParser csvParser = new CSVParser();
-	String[] parts = csvParser.parseLine(line);
-	String Year = parts[0] ;String State = parts[2];String Category = parts[6] ;String Measure = parts[8] ;String Data_Value = parts[12];
-	String Low_confidence_Limit = parts[13];String High_confidence_Limit = parts[14] ;String Population = parts[17] ;String issue = parts[23];
-	TableRow row = new TableRow().set("Year", Year).set("State", State).set("Category",Category)
-	.set("Measure",Measure).set("Data_Value",Data_Value).set("Low_confidence_Limit",Low_confidence_Limit).set("High_confidence_Limit",High_confidence_Limit)
-		.set("Population",Population).set("issue",issue);
-   	c.output(row);
-  }
+	private static long row_id = 0;
+	public static Parser parser = new Parser();
+	static final DoFn<String, TableRow> MUTATION_TRANSFORM = new DoFn<String, TableRow>() {
+		private static final long serialVersionUID = 1L;
+		@Override
+		public void processElement(DoFn<String, TableRow>.ProcessContext context) throws Exception {
+			String csvData = context.element();
+			CitiesData cityData =  parser.getCityData(csvData);
+			TableRow row = new TableRow().set("Year", cityData.getYear()).set("State", cityData.getState()).set("Category",cityData.getCategory())
+					.set("Measure",cityData.getMeasure()).set("Data_Value",cityData.getData_value()).set("Low_confidence_Limit",cityData.getLow_confidence_Limit()).set("High_confidence_Limit",cityData.getHigh_confidence_Limit())
+					.set("Population",cityData.getPopulation()).set("Issue",cityData.getIssue());
+			context.output(row);
+		}
 
-}; 
+	}; 
 	public static void main(String[] args) 
 	{
 		DataflowPipelineOptions  options = PipelineOptionsFactory.create().as(DataflowPipelineOptions.class);
@@ -48,12 +45,12 @@ static final DoFn<String, TableRow> MUTATION_TRANSFORM = new DoFn<String, TableR
 		options.setProject("healthcare-12");
 		options.setStagingLocation("gs://mihin-data/staging12");
 		Pipeline p = Pipeline.create(options);
- 		p.apply(TextIO.Read.named("Fetching File from Cloud").from("gs://healthcare-12/500_Cities__Local_Data_for_Better_Health.csv")).apply(ParDo.named("Processing File").of(MUTATION_TRANSFORM))
+		p.apply(TextIO.Read.named("Fetching File from Cloud").from("gs://healthcare-12/500_Cities__Local_Data_for_Better_Health.csv")).apply(ParDo.named("Processing File").of(MUTATION_TRANSFORM))
 		.apply(BigQueryIO.Write
-      .named("Writeing to Big Querry")
-      .to("healthcare-12:health_care_data.500_cities_local_data_for_better_health")
-     .withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_TRUNCATE)
-      .withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_NEVER));
+				.named("Writeing to Big Querry")
+				.to("healthcare-12:health_care_data.500_cities_local_data_for_better_health2")
+				.withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_TRUNCATE)
+				.withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_NEVER));
 		p.run();
 
 	}
