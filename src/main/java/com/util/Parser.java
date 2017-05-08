@@ -15,7 +15,8 @@ public class Parser {
 		String state = data[2];
 		String category = data[6] ;
 		String measure = data[8] ;
-		int data_value = Float.parseFloat(data[12]);
+		float data_value1 = Float.parseFloat(data[12]);
+		int data_value = (int) data_value1;
 		String low_confidence_Limit = data[13];
 		String high_confidence_Limit = data[14] ;
 		double population = Double.parseDouble(data[17]) ;
