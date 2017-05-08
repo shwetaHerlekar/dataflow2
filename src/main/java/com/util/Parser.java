@@ -11,14 +11,24 @@ public class Parser {
 	public CitiesData getCityData(String csvData) throws IOException{
 		String[] data = csvParser.parseLine(csvData);
 		CitiesData cityDataObject = new CitiesData();
-		int year = Integer.parseInt(data[0]) ;
+		int year = 0 ;
+		if (! data[0].isEmpty()) {
+			year= Integer.parseInt(data[0]) ;
+		}
 		String state = data[2];
 		String category = data[6] ;
 		String measure = data[8] ;
-		int data_value = Integer.parseInt(data[12]);
+		float data_value1 = 0;
+		if (! data[12].isEmpty()) {
+			data_value1 = Float.parseFloat(data[12]);
+		}
+		int data_value = (int) data_value1;
 		String low_confidence_Limit = data[13];
 		String high_confidence_Limit = data[14] ;
-		double population = Double.parseDouble(data[17]) ;
+		double population = 0 ;
+		if (! data[17].isEmpty()) {
+		population= Double.parseDouble(data[17]) ;
+		}
 		String issue = data[23];
 		cityDataObject.setCategory(category);
 		cityDataObject.setData_value(data_value);
@@ -30,5 +40,21 @@ public class Parser {
 		cityDataObject.setPopulation(population);
 		cityDataObject.setState(state);
 		return cityDataObject;
+	}
+	public RiskFactor getRiskFactorData(String csvData) throws IOException{
+		String[] data = csvParser.parseLine(csvData);
+		RiskFactor riskFactorObject = new RiskFactor();
+		int Year = 0 ;
+		if (! data[0].isEmpty()) {
+			Year= Integer.parseInt(data[0]) ;
+		}
+		String Location = data[2];
+		String Category = data[8] ;
+		String Topic = data[9] ;
+		riskFactorObject.setCategory(Category);
+		riskFactorObject.setLocation(Location);
+		riskFactorObject.setTopic(Topic);
+		riskFactorObject.setYear(Year);
+		return riskFactorObject;
 	}
 }
