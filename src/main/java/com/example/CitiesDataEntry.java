@@ -33,7 +33,7 @@ public class CitiesDataEntry
 			CitiesData cityData =  parser.getCityData(csvData);
 			TableRow row = new TableRow().set("Year", cityData.getYear()).set("State", cityData.getState()).set("Category",cityData.getCategory())
 					.set("Measure",cityData.getMeasure()).set("Data_Value",cityData.getData_value()).set("Low_confidence_Limit",cityData.getLow_confidence_Limit()).set("High_confidence_Limit",cityData.getHigh_confidence_Limit())
-					.set("Population",cityData.getPopulation()).set("Issue",cityData.getIssue());
+					.set("Population",cityData.getPopulation()).set("Issues",cityData.getIssue());
 			context.output(row);
 		}
 
