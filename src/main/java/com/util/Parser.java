@@ -27,9 +27,9 @@ public class Parser {
 		int data_value = (int) data_value1;
 		String low_confidence_Limit = data[13];
 		String high_confidence_Limit = data[14] ;
-		double population = 0 ;
+		int population = 0 ;
 		if (! data[17].isEmpty()) {
-		population= Double.parseDouble(data[17]) ;
+		population= Integer.parseInt(data[17]) ;
 		}
 		String issue = data[23];
 		cityDataObject.setCategory(category);
