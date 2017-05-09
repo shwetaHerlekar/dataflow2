@@ -8,7 +8,7 @@ public class CitiesData {
 	private String Low_confidence_Limit;
 	private String High_confidence_Limit;
 	private int data_value;
-	private double population;
+	private int population;
 	private String issue;
 	public int getYear() {
 		return year;
@@ -52,10 +52,10 @@ public class CitiesData {
 	public void setData_value(int data_value) {
 		this.data_value = data_value;
 	}
-	public double getPopulation() {
+	public int getPopulation() {
 		return population;
 	}
-	public void setPopulation(double population) {
+	public void setPopulation(int population) {
 		this.population = population;
 	}
 	public String getIssue() {
