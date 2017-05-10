@@ -1,8 +1,13 @@
 com/example/riskFactorFilUpload.class
 com/example/CitiesDataEntry$1.class
 com/example/CitiesDataEntry.class
+com/example/Synpuf$1.class
+com/dao/RiskFactor.class
+com/example/Mihin_Patient.class
+com/example/Mihin_Patient$1.class
 com/util/Parser.class
 com/example/Mihin_Encounter$1.class
 com/example/riskFactorFilUpload$1.class
 com/example/Mihin_Encounter.class
 com/dao/CitiesData.class
+com/example/Synpuf.class
