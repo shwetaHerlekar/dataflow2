@@ -75,9 +75,9 @@ public class Mihin_Encounter
 		options.setProject("healthcare-12");
 		options.setStagingLocation("gs://mihin-data/staging12");
 		Pipeline p = Pipeline.create(options);
-		p.apply(TextIO.Read.from("gs://mihin-data/formatedEncounterEntry.json")).apply(ParDo.named("Loading to Bigtable").of(MUTATION_TRANSFORM))
+		p.apply(TextIO.Read.named("Fetching file from storage").from("gs://mihin-data/formatedEncounterEntry.json")).apply(ParDo.named("Transforming FHIR -> Table Format").of(MUTATION_TRANSFORM))
 		.apply(BigQueryIO.Write
-				.named("Write")
+				.named("Pushing to BigQuerry")
 				.to("healthcare-12:Mihin_Data_Sample.Encounter_Entry")
 				.withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_TRUNCATE)
 				.withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_NEVER));
