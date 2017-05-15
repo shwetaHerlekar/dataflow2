@@ -91,9 +91,9 @@ public class Mihin_Patient
 		options.setProject("healthcare-12");
 		options.setStagingLocation("gs://mihin-data/staging12");
 		Pipeline p = Pipeline.create(options);
-		p.apply(TextIO.Read.from("gs://mihin-data/PatientFormated.json")).apply(ParDo.named("Loading Patient data to BigQuery").of(MUTATION_TRANSFORM))
+		p.apply(TextIO.Read.named("Fetching to cloud").from("gs://mihin-data/PatientFormated.json")).apply(ParDo.named("Transforming from FHIR -> Table Format ").of(MUTATION_TRANSFORM))
 		.apply(BigQueryIO.Write
-				.named("Write")
+				.named("Pushing to BigQuerry")
 				.to("healthcare-12:Mihin_Data_Sample.Mihin_Patient_Entry")
 				.withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_TRUNCATE)
 				.withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_NEVER));
