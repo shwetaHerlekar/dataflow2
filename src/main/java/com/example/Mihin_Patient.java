@@ -73,7 +73,7 @@ public class Mihin_Patient
 					bdate = String.valueOf(map.get("birthDate"));
 					gender = String.valueOf(map.get("gender"));
 					patient_id = String.valueOf(map.get("id"));
-					TableRow row = new TableRow().set("name", name).set("city", city).set("state",state).set("postal_code",postal_code).set("bdate",bdate).set("gender",gender).set("all_json",all_json);
+					TableRow row = new TableRow().set("name", name).set("city", city).set("state",state).set("postal_code",postal_code).set("bdate",bdate).set("gender",gender).set("patient_id",patient_id);
 					c.output(row);
 				}
 			}
