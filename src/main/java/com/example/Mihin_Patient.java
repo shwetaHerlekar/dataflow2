@@ -98,16 +98,6 @@ public class Mihin_Patient
 				.withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_TRUNCATE)
 				.withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_NEVER));
 		p.run();
-		/*
-.apply(BigQueryIO.Write
-      .named("Write")
-      .to("healthcare-12:Mihin_Data_Sample.Encounter_Entry")
-     .withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_TRUNCATE)
-      .withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_NEVER));
-		 */
-		//PCollection<String> lines=p.apply(TextIO.Read.from("gs://synpuf-data/DE1_0_2008_Beneficiary_Summary_File_Sample_1.csv"))
-		//PCollection<String> fields = lines.apply(ParDo.of(new ExtractFieldsFn()));
-		//p.apply(TextIO.Write.to("gs://synpuf-data/temp.txt"));
 	}
 
 }
